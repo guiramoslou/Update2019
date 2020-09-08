@@ -1,5 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
+using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
 
 namespace SalesWebMvc.Controllers
@@ -14,6 +19,7 @@ namespace SalesWebMvc.Controllers
             _sellerService = sellerService;
             _departmentService = departmentService;
         }
+
         public IActionResult Index()
         {
             var list = _sellerService.FindAll();
@@ -34,7 +40,7 @@ namespace SalesWebMvc.Controllers
             _sellerService.Insert(seller);
             return RedirectToAction(nameof(Index));
         }
-        
+
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -49,7 +55,14 @@ namespace SalesWebMvc.Controllers
             }
 
             return View(obj);
-        } 
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
+        }
     }
 }
